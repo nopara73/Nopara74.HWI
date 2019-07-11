@@ -12,6 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nopara74.HWI.Tests", "Nopar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F72A53E-976E-4768-AA08-778BE72F4D7F}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		CodeMaid.config = CodeMaid.config
 	EndProjectSection
 EndProject

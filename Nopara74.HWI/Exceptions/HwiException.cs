@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Nopara74.HWI.Exceptions
 {
-    public class HwiException : Exception
-    {
-        public ErrorCode ErrorCode { get; }
+	public class HwiException : Exception
+	{
+		public ErrorCode ErrorCode { get; }
 
-        public HwiException(ErrorCode errorCode, string message) : base(message)
-        {
-            ErrorCode = errorCode;
-        }
-    }
+		public HwiException(ErrorCode errorCode, string message) : base(message)
+		{
+			ErrorCode = errorCode;
+		}
+	}
 }

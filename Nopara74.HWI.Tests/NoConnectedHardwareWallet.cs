@@ -2,78 +2,99 @@ using NBitcoin;
 using Nopara74.HWI;
 using Nopara74.HWI.Exceptions;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Nopara74.HWI.Tests
 {
-    public class NoConnectedHardwareWalletTests
-    {
-        public HwiClient Client { get; } = new HwiClient();
+	public class NoConnectedHardwareWalletTests
+	{
+		public HwiClient Client { get; } = new HwiClient();
 
-        [Fact]
-        public void CanGetHelp()
-        {
-            #region Act
+		[Fact]
+		public void CanGetHelp()
+		{
+			#region Act
 
-            string help = Client.GetHelp();
+			string help = Client.GetHelp();
 
-            #endregion Act
+			#endregion Act
 
-            #region Assert
+			#region Assert
 
-            Assert.NotEmpty(help);
+			Assert.NotEmpty(help);
 
-            #endregion Assert
-        }
+			#endregion Assert
+		}
 
-        [Fact]
-        public void CanGetVersion()
-        {
-            #region Act
+		[Fact]
+		public void CanGetVersion()
+		{
+			#region Act
 
-            Version version = Client.GetVersion();
+			Version version = Client.GetVersion();
 
-            #endregion Act
+			#endregion Act
 
-            #region Assert
+			#region Assert
 
-            Assert.Equal(new Version("1.0.1"), version);
+			Assert.Equal(new Version("1.0.1"), version);
 
-            #endregion Assert
-        }
+			#endregion Assert
+		}
 
-        [Fact]
-        public void CanEnumerate()
-        {
-            #region Act
+		[Fact]
+		public void CanEnumerate()
+		{
+			#region Act
 
-            string enumerate = Client.Enumerate();
+			string enumerate = Client.Enumerate();
 
-            #endregion Act
+			#endregion Act
 
-            #region Assert
+			#region Assert
 
-            Assert.Equal("[]", enumerate);
+			Assert.Equal("[]", enumerate);
 
-            #endregion Assert
-        }
+			#endregion Assert
+		}
 
-        [Fact]
-        public void CantGetMasterXpub()
-        {
-            #region Act
+		[Fact]
+		public void AssertNoDevicePathErrors()
+		{
+			#region Arrange
 
-            Func<object> getMasterXpub = Client.GetMasterXpub;
+			var funcs = new List<Func<ExtPubKey>>();
 
-            #endregion Act
+			#endregion Arrange
 
-            #region Assert
+			#region Act
 
-            var ex = Assert.Throws<HwiException>(getMasterXpub);
-            Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
-            Assert.NotEmpty(ex.Message);
+			funcs.Add(Client.GetMasterXpub);
+			funcs.Add(Client.GetXpub);
+			funcs.Add(Client.SignTx);
+			funcs.Add(Client.SignMessage);
+			funcs.Add(Client.GetKeypool);
+			funcs.Add(Client.DisplayAddress);
+			funcs.Add(Client.Setup);
+			funcs.Add(Client.Wipe);
+			funcs.Add(Client.Restore);
+			funcs.Add(Client.Backup);
+			funcs.Add(Client.PromptPin);
+			funcs.Add(Client.SendPin);
 
-            #endregion Assert
-        }
-    }
+			#endregion Act
+
+			#region Assert
+
+			foreach (Func<ExtPubKey> func in funcs)
+			{
+				var ex = Assert.Throws<HwiException>(func);
+				Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
+				Assert.NotEmpty(ex.Message);
+			}
+
+			#endregion Assert
+		}
+	}
 }
