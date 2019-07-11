@@ -13,5 +13,10 @@ namespace Nopara73.HWI
         {
             return "foo";
         }
+
+        public Version GetVersion()
+        {
+            return new Version("1.0.1");
+        }
     }
 }
