@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NBitcoin;
 
 namespace Nopara73.HWI
 {
@@ -22,6 +23,11 @@ namespace Nopara73.HWI
         public string Enumerate()
         {
             return "[]";
+        }
+
+        public ExtPubKey GetMasterXpub()
+        {
+            throw new HwiException();
         }
     }
 }
