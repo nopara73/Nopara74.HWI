@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nopara74.HWI", "Nopara74.HWI\Nopara74.HWI.csproj", "{37BE0049-BCB1-4463-B6D4-8248888239DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nopara74.HWI", "Nopara74.HWI\Nopara74.HWI.csproj", "{37BE0049-BCB1-4463-B6D4-8248888239DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nopara73.HWI.Tests", "Nopara73.HWI.Tests\Nopara73.HWI.Tests.csproj", "{97B18D4A-8CAD-49C0-B346-66EECFE76995}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nopara74.HWI.Tests", "Nopara74.HWI.Tests\Nopara74.HWI.Tests.csproj", "{97B18D4A-8CAD-49C0-B346-66EECFE76995}"
 	ProjectSection(ProjectDependencies) = postProject
 		{37BE0049-BCB1-4463-B6D4-8248888239DF} = {37BE0049-BCB1-4463-B6D4-8248888239DF}
 	EndProjectSection

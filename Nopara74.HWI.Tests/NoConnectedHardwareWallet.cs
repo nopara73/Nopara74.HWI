@@ -1,23 +1,21 @@
 using NBitcoin;
+using Nopara74.HWI;
+using Nopara74.HWI.Exceptions;
 using System;
 using Xunit;
 
-namespace Nopara73.HWI.Tests
+namespace Nopara74.HWI.Tests
 {
     public class NoConnectedHardwareWalletTests
     {
+        public HwiClient Client { get; } = new HwiClient();
+
         [Fact]
         public void CanGetHelp()
         {
-            #region Arrange
-
-            var hwiClient = new HwiClient();
-
-            #endregion Arrange
-
             #region Act
 
-            string help = hwiClient.GetHelp();
+            string help = Client.GetHelp();
 
             #endregion Act
 
@@ -31,15 +29,9 @@ namespace Nopara73.HWI.Tests
         [Fact]
         public void CanGetVersion()
         {
-            #region Arrange
-
-            var hwiClient = new HwiClient();
-
-            #endregion Arrange
-
             #region Act
 
-            Version version = hwiClient.GetVersion();
+            Version version = Client.GetVersion();
 
             #endregion Act
 
@@ -53,15 +45,9 @@ namespace Nopara73.HWI.Tests
         [Fact]
         public void CanEnumerate()
         {
-            #region Arrange
-
-            var hwiClient = new HwiClient();
-
-            #endregion Arrange
-
             #region Act
 
-            string enumerate = hwiClient.Enumerate();
+            string enumerate = Client.Enumerate();
 
             #endregion Act
 
@@ -75,17 +61,18 @@ namespace Nopara73.HWI.Tests
         [Fact]
         public void CantGetMasterXpub()
         {
-            #region Arrange
+            #region Act
 
-            var hwiClient = new HwiClient();
+            Func<object> getMasterXpub = Client.GetMasterXpub;
 
-            #endregion Arrange
+            #endregion Act
 
-            #region ActAndAssert
+            #region Assert
 
-            Assert.Throws<HwiException>(hwiClient.GetMasterXpub);
+            var ex = Assert.Throws<HwiException>(getMasterXpub);
+            Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
 
-            #endregion ActAndAssert
+            #endregion Assert
         }
     }
 }

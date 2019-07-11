@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NBitcoin;
+using Nopara74.HWI.Exceptions;
 
-namespace Nopara73.HWI
+namespace Nopara74.HWI
 {
     public class HwiClient
     {
@@ -27,7 +28,7 @@ namespace Nopara73.HWI
 
         public ExtPubKey GetMasterXpub()
         {
-            throw new HwiException();
+            throw new HwiException(ErrorCode.NoDevicePath);
         }
     }
 }
