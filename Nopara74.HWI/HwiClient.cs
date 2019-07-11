@@ -18,5 +18,10 @@ namespace Nopara73.HWI
         {
             return new Version("1.0.1");
         }
+
+        public string Enumerate()
+        {
+            return "[]";
+        }
     }
 }

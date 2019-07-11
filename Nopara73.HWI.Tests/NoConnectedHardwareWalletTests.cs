@@ -48,5 +48,27 @@ namespace Nopara73.HWI.Tests
 
             #endregion
         }
+
+        [Fact]
+        public void CanEnumerate()
+        {
+            #region Arrange
+
+            var hwiClient = new HwiClient();
+
+            #endregion
+
+            #region Act
+
+            string enumerate = hwiClient.Enumerate();
+
+            #endregion
+
+            #region Assert
+
+            Assert.Equal("[]", enumerate);
+
+            #endregion
+        }
     }
 }
