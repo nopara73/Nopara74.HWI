@@ -71,6 +71,7 @@ namespace Nopara74.HWI.Tests
 
             var ex = Assert.Throws<HwiException>(getMasterXpub);
             Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
+            Assert.NotEmpty(ex.Message);
 
             #endregion Assert
         }

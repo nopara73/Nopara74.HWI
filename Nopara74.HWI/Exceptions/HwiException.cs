@@ -8,7 +8,7 @@ namespace Nopara74.HWI.Exceptions
     {
         public ErrorCode ErrorCode { get; }
 
-        public HwiException(ErrorCode errorCode)
+        public HwiException(ErrorCode errorCode, string message) : base(message)
         {
             ErrorCode = errorCode;
         }

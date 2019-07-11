@@ -28,7 +28,7 @@ namespace Nopara74.HWI
 
         public ExtPubKey GetMasterXpub()
         {
-            throw new HwiException(ErrorCode.NoDevicePath);
+            throw new HwiException(ErrorCode.NoDevicePath, "foo");
         }
     }
 }
