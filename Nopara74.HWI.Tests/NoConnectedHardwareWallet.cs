@@ -14,11 +14,11 @@ namespace Nopara74.HWI.Tests
 		[Fact]
 		public void ThrowsHwiClientConstructorArgumentNullException()
 		{
-			#region ArrangeAct
+			#region Arrange
 
 			HwiClient hwiClientNullNetworkFunc() => new HwiClient(null);
 
-			#endregion ArrangeAct
+			#endregion Arrange
 
 			#region Assert
 
