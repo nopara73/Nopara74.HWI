@@ -167,7 +167,7 @@ namespace Nopara74.HWI.Tests
 			var devicePaths = new List<string>
 			{
 				"wrongdevicepath",
-				"wrong device path with spaces",
+				" wrong device path with spaces ",
 				"wrong device path with ~!@#$%^&*()_+"
 			};
 
