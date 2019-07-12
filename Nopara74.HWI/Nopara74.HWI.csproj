@@ -8,4 +8,10 @@
     <PackageReference Include="NBitcoin" Version="4.1.2.37" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Binaries\hwi-win64\hwi.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

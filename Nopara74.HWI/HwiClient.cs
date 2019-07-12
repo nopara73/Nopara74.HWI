@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using NBitcoin;
 using Nopara74.HWI.Exceptions;
@@ -11,9 +12,19 @@ namespace Nopara74.HWI
 	{
 		public Network Network { get; }
 
+		public string HwiPath { get; }
+
 		public HwiClient(Network network)
 		{
 			Network = Guard.NotNull(nameof(network), network);
+
+			var fullBaseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
+			HwiPath = Path.Combine(fullBaseDirectory, "Binaries", "hwi-win64", "hwi.exe");
+
+			if (!File.Exists(HwiPath))
+			{
+				throw new FileNotFoundException($"{nameof(HwiPath)} not found.", HwiPath);
+			}
 		}
 
 		public string GetHelp()
