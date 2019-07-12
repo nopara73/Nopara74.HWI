@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NBitcoin;
 using Nopara74.HWI.Exceptions;
+using Nopara74.HWI.Guarding;
 using Nopara74.HWI.Models;
 
 namespace Nopara74.HWI
@@ -12,7 +13,7 @@ namespace Nopara74.HWI
 
 		public HwiClient(Network network)
 		{
-			Network = network ?? throw new ArgumentNullException(nameof(network));
+			Network = Guard.NotNull(nameof(network), network);
 		}
 
 		public string GetHelp()
@@ -92,10 +93,7 @@ namespace Nopara74.HWI
 
 		private ExtPubKey SendCommand(string devicePath, DeviceType deviceType)
 		{
-			if (devicePath == null)
-			{
-				throw new ArgumentNullException(nameof(devicePath));
-			}
+			devicePath = Guard.NotNullOrEmptyOrWhitespace(nameof(devicePath), devicePath);
 
 			throw new HwiException(ErrorCode.NoDevicePath, "foo");
 		}

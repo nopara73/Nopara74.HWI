@@ -29,25 +29,41 @@ namespace Nopara74.HWI.Tests
 		}
 
 		[Fact]
-		public void ThrowsDevicePathArgumentNullException()
+		public void ThrowsDevicePathArgumentExceptions()
 		{
-			#region ArrangeAct
+			#region Arrange
 
 			var client = new HwiClient(Network.Main);
+			var expectedParamName = "devicePath";
 
-			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
+			#endregion Arrange
+
+			#region ArrangeAct
+
+			List<Func<object>> nullFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
+
+			List<Func<object>> emptyFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: "");
+			List<Func<object>> whitespaceFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: " ");
+			var emptyAndWhitespaceFuncs = emptyFuncs.Concat(whitespaceFuncs);
 
 			#endregion ArrangeAct
 
 			#region Assert
 
-			foreach (Func<object> func in funcs)
-			{
-				var ex = Assert.Throws<ArgumentNullException>(func);
-				Assert.Equal("devicePath", ex.ParamName);
-			}
+			IterateAssertArgumentExceptionParamName<ArgumentNullException>(nullFuncs, expectedParamName);
+
+			IterateAssertArgumentExceptionParamName<ArgumentException>(emptyAndWhitespaceFuncs, expectedParamName);
 
 			#endregion Assert
+		}
+
+		private static void IterateAssertArgumentExceptionParamName<T>(IEnumerable<Func<object>> funcs, string expectedParamName) where T : ArgumentException
+		{
+			foreach (Func<object> func in funcs)
+			{
+				var ex = Assert.Throws<T>(func);
+				Assert.Equal(expectedParamName, ex.ParamName);
+			}
 		}
 
 		[Theory]
@@ -150,7 +166,6 @@ namespace Nopara74.HWI.Tests
 
 			var devicePaths = new List<string>
 			{
-				"",
 				"wrongdevicepath",
 				"wrong device path with spaces",
 				"wrong device path with ~!@#$%^&*()_+"
