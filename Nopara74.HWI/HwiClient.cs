@@ -31,67 +31,67 @@ namespace Nopara74.HWI
 			return "[]";
 		}
 
-		public ExtPubKey GetMasterXpub(string devicePath, DeviceType deviceType)
+		public ExtPubKey GetMasterXpub(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey GetXpub(string devicePath, DeviceType deviceType)
+		public ExtPubKey GetXpub(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey SignTx(string devicePath, DeviceType deviceType)
+		public ExtPubKey SignTx(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey SignMessage(string devicePath, DeviceType deviceType)
+		public ExtPubKey SignMessage(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey GetKeypool(string devicePath, DeviceType deviceType)
+		public ExtPubKey GetKeypool(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey DisplayAddress(string devicePath, DeviceType deviceType)
+		public ExtPubKey DisplayAddress(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey Setup(string devicePath, DeviceType deviceType)
+		public ExtPubKey Setup(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey Wipe(string devicePath, DeviceType deviceType)
+		public ExtPubKey Wipe(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey Restore(string devicePath, DeviceType deviceType)
+		public ExtPubKey Restore(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey Backup(string devicePath, DeviceType deviceType)
+		public ExtPubKey Backup(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey PromptPin(string devicePath, DeviceType deviceType)
+		public ExtPubKey PromptPin(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		public ExtPubKey SendPin(string devicePath, DeviceType deviceType)
+		public ExtPubKey SendPin(string devicePath, DeviceType deviceType, string password = null)
 		{
-			return SendCommand(devicePath, deviceType);
+			return SendCommand(devicePath, deviceType, password);
 		}
 
-		private ExtPubKey SendCommand(string devicePath, DeviceType deviceType)
+		private ExtPubKey SendCommand(string devicePath, DeviceType deviceType, string password)
 		{
 			devicePath = Guard.NotNullOrEmptyOrWhitespace(nameof(devicePath), devicePath);
 

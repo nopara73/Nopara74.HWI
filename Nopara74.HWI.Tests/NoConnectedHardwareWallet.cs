@@ -40,10 +40,10 @@ namespace Nopara74.HWI.Tests
 
 			#region ArrangeAct
 
-			List<Func<object>> nullFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
+			var nullFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null, password: null);
 
-			List<Func<object>> emptyFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: "");
-			List<Func<object>> whitespaceFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: " ");
+			var emptyFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: "", password: null);
+			var whitespaceFuncs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: " ", password: null);
 			var emptyAndWhitespaceFuncs = emptyFuncs.Concat(whitespaceFuncs);
 
 			#endregion ArrangeAct
@@ -55,15 +55,6 @@ namespace Nopara74.HWI.Tests
 			IterateAssertArgumentExceptionParamName<ArgumentException>(emptyAndWhitespaceFuncs, expectedParamName);
 
 			#endregion Assert
-		}
-
-		private static void IterateAssertArgumentExceptionParamName<T>(IEnumerable<Func<object>> funcs, string expectedParamName) where T : ArgumentException
-		{
-			foreach (Func<object> func in funcs)
-			{
-				var ex = Assert.Throws<T>(func);
-				Assert.Equal(expectedParamName, ex.ParamName);
-			}
 		}
 
 		[Theory]
@@ -119,13 +110,44 @@ namespace Nopara74.HWI.Tests
 
 		[Theory]
 		[MemberData(nameof(GetOptionCombinationValues))]
-		public void ThrowsNoDevicePathHwiException(HwiClient client, DeviceType deviceType, string devicePath)
+		public void ThrowsNoDevicePathHwiException(HwiClient client, DeviceType deviceType)
 		{
-			#region ArrangeAct
+			#region Arrange
 
-			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType, devicePath);
+			var passwords = new List<string>
+			{
+				null,
+				"",
+				" ",
+				"password",
+				" password wit spaces trim ",
+				"~!@#$%^&*()_+"
+			};
 
-			#endregion ArrangeAct
+			var devicePaths = new List<string>
+			{
+				"wrongdevicepath",
+				" wrong device path with spaces ",
+				"wrong device path with ~!@#$%^&*()_+"
+			};
+
+			#endregion Arrange
+
+			#region Act
+
+			var funcs = new List<Func<object>>();
+
+			foreach (var password in passwords)
+			{
+				funcs.AddRange(GetWalletSpecificFunctions(client, deviceType, devicePath: devicePaths.First(), password));
+			}
+
+			foreach (var devicePath in devicePaths)
+			{
+				funcs.AddRange(GetWalletSpecificFunctions(client, deviceType, devicePath, password: passwords.First()));
+			}
+
+			#endregion Act
 
 			#region Assert
 
@@ -139,22 +161,31 @@ namespace Nopara74.HWI.Tests
 			#endregion Assert
 		}
 
-		private static List<Func<object>> GetWalletSpecificFunctions(HwiClient client, DeviceType deviceType, string devicePath)
+		private static void IterateAssertArgumentExceptionParamName<T>(IEnumerable<Func<object>> funcs, string expectedParamName) where T : ArgumentException
+		{
+			foreach (Func<object> func in funcs)
+			{
+				var ex = Assert.Throws<T>(func);
+				Assert.Equal(expectedParamName, ex.ParamName);
+			}
+		}
+
+		private static IEnumerable<Func<object>> GetWalletSpecificFunctions(HwiClient client, DeviceType deviceType, string devicePath, string password)
 		{
 			var funcs = new List<Func<object>>
 			{
-				() => client.GetMasterXpub(devicePath, deviceType),
-				() => client.GetXpub(devicePath, deviceType),
-				() => client.SignTx(devicePath, deviceType),
-				() => client.SignMessage(devicePath, deviceType),
-				() => client.GetKeypool(devicePath, deviceType),
-				() => client.DisplayAddress(devicePath, deviceType),
-				() => client.Setup(devicePath, deviceType),
-				() => client.Wipe(devicePath, deviceType),
-				() => client.Restore(devicePath, deviceType),
-				() => client.Backup(devicePath, deviceType),
-				() => client.PromptPin(devicePath, deviceType),
-				() => client.SendPin(devicePath, deviceType)
+				() => client.GetMasterXpub(devicePath, deviceType, password),
+				() => client.GetXpub(devicePath, deviceType, password),
+				() => client.SignTx(devicePath, deviceType, password),
+				() => client.SignMessage(devicePath, deviceType, password),
+				() => client.GetKeypool(devicePath, deviceType, password),
+				() => client.DisplayAddress(devicePath, deviceType, password),
+				() => client.Setup(devicePath, deviceType, password),
+				() => client.Wipe(devicePath, deviceType, password),
+				() => client.Restore(devicePath, deviceType, password),
+				() => client.Backup(devicePath, deviceType, password),
+				() => client.PromptPin(devicePath, deviceType, password),
+				() => client.SendPin(devicePath, deviceType, password)
 			};
 
 			return funcs;
@@ -164,22 +195,12 @@ namespace Nopara74.HWI.Tests
 		{
 			Array deviceTypes = Enum.GetValues(typeof(DeviceType));
 
-			var devicePaths = new List<string>
-			{
-				"wrongdevicepath",
-				" wrong device path with spaces ",
-				"wrong device path with ~!@#$%^&*()_+"
-			};
-
 			foreach (object[] clientValues in GetHwiClientValues())
 			{
 				object clientValue = clientValues.First();
 				foreach (DeviceType deviceType in deviceTypes)
 				{
-					foreach (string devicePath in devicePaths)
-					{
-						yield return new object[] { clientValue, deviceType, devicePath };
-					}
+					yield return new object[] { clientValue, deviceType };
 				}
 			}
 		}
