@@ -1,22 +1,23 @@
 using NBitcoin;
 using Nopara74.HWI;
 using Nopara74.HWI.Exceptions;
+using Nopara74.HWI.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Nopara74.HWI.Tests
 {
 	public class NoConnectedHardwareWalletTests
 	{
-		public HwiClient Client { get; } = new HwiClient();
-
-		[Fact]
-		public void CanGetHelp()
+		[Theory]
+		[MemberData(nameof(GetHwiClientValues))]
+		public void CanGetHelp(HwiClient client)
 		{
 			#region Act
 
-			string help = Client.GetHelp();
+			string help = client.GetHelp();
 
 			#endregion Act
 
@@ -27,12 +28,13 @@ namespace Nopara74.HWI.Tests
 			#endregion Assert
 		}
 
-		[Fact]
-		public void CanGetVersion()
+		[Theory]
+		[MemberData(nameof(GetHwiClientValues))]
+		public void CanGetVersion(HwiClient client)
 		{
 			#region Act
 
-			Version version = Client.GetVersion();
+			Version version = client.GetVersion();
 
 			#endregion Act
 
@@ -43,12 +45,13 @@ namespace Nopara74.HWI.Tests
 			#endregion Assert
 		}
 
-		[Fact]
-		public void CanEnumerate()
+		[Theory]
+		[MemberData(nameof(GetHwiClientValues))]
+		public void CanEnumerate(HwiClient client)
 		{
 			#region Act
 
-			string enumerate = Client.Enumerate();
+			string enumerate = client.Enumerate();
 
 			#endregion Act
 
@@ -59,35 +62,19 @@ namespace Nopara74.HWI.Tests
 			#endregion Assert
 		}
 
-		[Fact]
-		public void AssertNoDevicePathErrors()
+		[Theory]
+		[MemberData(nameof(GetOptionCombinationValues))]
+		public void ThrowsNoDevicePathHwiException(HwiClient client, DeviceType deviceType, string devicePath)
 		{
-			#region Arrange
+			#region ArrangeAct
 
-			var funcs = new List<Func<ExtPubKey>>();
+			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType, devicePath);
 
-			#endregion Arrange
-
-			#region Act
-
-			funcs.Add(Client.GetMasterXpub);
-			funcs.Add(Client.GetXpub);
-			funcs.Add(Client.SignTx);
-			funcs.Add(Client.SignMessage);
-			funcs.Add(Client.GetKeypool);
-			funcs.Add(Client.DisplayAddress);
-			funcs.Add(Client.Setup);
-			funcs.Add(Client.Wipe);
-			funcs.Add(Client.Restore);
-			funcs.Add(Client.Backup);
-			funcs.Add(Client.PromptPin);
-			funcs.Add(Client.SendPin);
-
-			#endregion Act
+			#endregion ArrangeAct
 
 			#region Assert
 
-			foreach (Func<ExtPubKey> func in funcs)
+			foreach (Func<object> func in funcs)
 			{
 				var ex = Assert.Throws<HwiException>(func);
 				Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
@@ -95,6 +82,90 @@ namespace Nopara74.HWI.Tests
 			}
 
 			#endregion Assert
+		}
+
+		[Fact]
+		public void ThrowsDevicePathArgumentNullException()
+		{
+			#region Arrange
+
+			var client = new HwiClient(Network.Main);
+
+			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
+
+			#endregion Arrange
+
+			#region Assert
+
+			foreach (Func<object> func in funcs)
+			{
+				var ex = Assert.Throws<ArgumentNullException>(func);
+				Assert.Equal("devicePath", ex.ParamName);
+			}
+
+			#endregion Assert
+		}
+
+		private static List<Func<object>> GetWalletSpecificFunctions(HwiClient client, DeviceType deviceType, string devicePath)
+		{
+			var funcs = new List<Func<object>>
+			{
+				() => client.GetMasterXpub(devicePath, deviceType),
+				() => client.GetXpub(devicePath, deviceType),
+				() => client.SignTx(devicePath, deviceType),
+				() => client.SignMessage(devicePath, deviceType),
+				() => client.GetKeypool(devicePath, deviceType),
+				() => client.DisplayAddress(devicePath, deviceType),
+				() => client.Setup(devicePath, deviceType),
+				() => client.Wipe(devicePath, deviceType),
+				() => client.Restore(devicePath, deviceType),
+				() => client.Backup(devicePath, deviceType),
+				() => client.PromptPin(devicePath, deviceType),
+				() => client.SendPin(devicePath, deviceType)
+			};
+
+			return funcs;
+		}
+
+		public static IEnumerable<object[]> GetOptionCombinationValues()
+		{
+			Array deviceTypes = Enum.GetValues(typeof(DeviceType));
+
+			var devicePaths = new List<string>
+			{
+				"",
+				"wrongdevicepath",
+				"wrong device path with spaces",
+				"wrong device path with ~!@#$%^&*()_+"
+			};
+
+			foreach (object[] clientValues in GetHwiClientValues())
+			{
+				object clientValue = clientValues.First();
+				foreach (DeviceType deviceType in deviceTypes)
+				{
+					foreach (string devicePath in devicePaths)
+					{
+						yield return new object[] { clientValue, deviceType, devicePath };
+					}
+				}
+			}
+		}
+
+		public static IEnumerable<object[]> GetHwiClientValues()
+		{
+			var networks = new List<Network>
+			{
+				Network.Main,
+				Network.TestNet,
+				Network.RegTest
+			};
+
+			foreach (Network network in networks)
+			{
+				var client = new HwiClient(network);
+				yield return new object[] { client };
+			}
 		}
 	}
 }
