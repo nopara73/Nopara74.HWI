@@ -5,6 +5,8 @@ using Nopara74.HWI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Nopara74.HWI.Tests
@@ -59,11 +61,11 @@ namespace Nopara74.HWI.Tests
 
 		[Theory]
 		[MemberData(nameof(GetDifferentNetworkHwiClientValues))]
-		public void CanGetHelp(HwiClient client)
+		public async Task CanGetHelpAsync(HwiClient client)
 		{
 			#region Act
 
-			string help = client.GetHelp();
+			string help = await client.GetHelpAsync(new CancellationTokenSource(1000).Token);
 
 			#endregion Act
 
@@ -76,34 +78,34 @@ namespace Nopara74.HWI.Tests
 
 		[Theory]
 		[MemberData(nameof(GetDifferentNetworkHwiClientValues))]
-		public void CanGetVersion(HwiClient client)
+		public async Task CanGetVersionAsync(HwiClient client)
 		{
 			#region Act
 
-			Version version = client.GetVersion();
+			Version version = await client.GetVersionAsync(new CancellationTokenSource(1000).Token);
 
 			#endregion Act
 
 			#region Assert
 
-			Assert.Equal(new Version("1.0.1"), version);
+			Assert.Equal(new Version("1.0.0"), version);
 
 			#endregion Assert
 		}
 
 		[Theory]
 		[MemberData(nameof(GetDifferentNetworkHwiClientValues))]
-		public void CanEnumerate(HwiClient client)
+		public async Task CanEnumerateAsync(HwiClient client)
 		{
 			#region Act
 
-			string enumerate = client.Enumerate();
+			IEnumerable<string> hwis = await client.EnumerateAsync(new CancellationTokenSource(1000).Token);
 
 			#endregion Act
 
 			#region Assert
 
-			Assert.Equal("[]", enumerate);
+			Assert.Empty(hwis);
 
 			#endregion Assert
 		}
