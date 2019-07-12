@@ -11,6 +11,45 @@ namespace Nopara74.HWI.Tests
 {
 	public class NoConnectedHardwareWalletTests
 	{
+		[Fact]
+		public void ThrowsHwiClientConstructorArgumentNullException()
+		{
+			#region ArrangeAct
+
+			HwiClient hwiClientNullNetworkFunc() => new HwiClient(null);
+
+			#endregion ArrangeAct
+
+			#region Assert
+
+			var ex = Assert.Throws<ArgumentNullException>(hwiClientNullNetworkFunc);
+			Assert.Equal("network", ex.ParamName);
+
+			#endregion Assert
+		}
+
+		[Fact]
+		public void ThrowsDevicePathArgumentNullException()
+		{
+			#region ArrangeAct
+
+			var client = new HwiClient(Network.Main);
+
+			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
+
+			#endregion ArrangeAct
+
+			#region Assert
+
+			foreach (Func<object> func in funcs)
+			{
+				var ex = Assert.Throws<ArgumentNullException>(func);
+				Assert.Equal("devicePath", ex.ParamName);
+			}
+
+			#endregion Assert
+		}
+
 		[Theory]
 		[MemberData(nameof(GetHwiClientValues))]
 		public void CanGetHelp(HwiClient client)
@@ -79,28 +118,6 @@ namespace Nopara74.HWI.Tests
 				var ex = Assert.Throws<HwiException>(func);
 				Assert.Equal(ErrorCode.NoDevicePath, ex.ErrorCode);
 				Assert.NotEmpty(ex.Message);
-			}
-
-			#endregion Assert
-		}
-
-		[Fact]
-		public void ThrowsDevicePathArgumentNullException()
-		{
-			#region Arrange
-
-			var client = new HwiClient(Network.Main);
-
-			List<Func<object>> funcs = GetWalletSpecificFunctions(client, deviceType: DeviceType.Coldcard, devicePath: null);
-
-			#endregion Arrange
-
-			#region Assert
-
-			foreach (Func<object> func in funcs)
-			{
-				var ex = Assert.Throws<ArgumentNullException>(func);
-				Assert.Equal("devicePath", ex.ParamName);
 			}
 
 			#endregion Assert
